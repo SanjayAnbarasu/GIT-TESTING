@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Static Page</title>
+    <style>
+        /* base styles */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 80vw;
+            max-width: 600px;
+            height: 80vh;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 2rem;
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+
+        #myImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            transition: transform 2s ease-in-out;
+        }
+
+        .status {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #ffa;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .controls label {
+            margin: 0 15px;
+            font-size: 0.95rem;
+        }
+        .controls select,
+        .controls input[type=range] {
+            margin-left: 5px;
+        }
+        .controls button {
+            margin-left: 20px;
+        }
+
+        button {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 12px 24px;
+            margin: 0 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* animation keyframes */
+        @keyframes moveSpin {
+            from {
+                top: 0;
+                left: 0;
+                transform: rotate(0deg);
+            }
+            to {
+                top: calc(100% - 150px);
+                left: calc(100% - 150px);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes zigzag {
+            0% { top: 0; left: 0; transform: rotate(0deg); }
+            25% { top: calc(50% - 75px); left: 0; transform: rotate(90deg); }
+            50% { top: calc(50% - 75px); left: calc(100% - 150px); transform: rotate(180deg); }
+            75% { top: calc(100% - 150px); left: calc(100% - 150px); transform: rotate(270deg); }
+            100% { top: calc(100% - 150px); left: calc(100% - 150px); transform: rotate(360deg); }
+        }
+
+        .animate {
+            animation: moveSpin 2s forwards ease-in-out;
+        }
+        /* stars overlay */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%,100% {opacity: 0.3;}
+            50% {opacity: 1;}
+        }
+    </style>
+</head>
+<body>
+    <h1 id="mainTitle">Futuristic Image Animator</h1>
+    <div id="status" class="status">Ready</div>
+    <div class="controls">
+        <label>
+            Path:
+            <select id="pathSelect">
+                <option value="diagonal">Diagonal</option>
+                <option value="zigzag">Zigzag</option>
+            </select>
+        </label>
+        <label>
+            Speed:
+            <input type="range" id="speedRange" min="0.5" max="3" step="0.1" value="1">
+        </label>
+        <button id="actionBtn">Animate</button>
+    </div>
+    <div class="container">
+        <img id="myImage" src="./images/download.png" alt="demo image">
+    </div>
+
+    <script>
+        // starfield creation for fun background
+        function createStars(count) {
+            const body = document.body;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = Math.random() * 100 + '%';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.animationDuration = 2 + Math.random() * 3 + 's';
+                body.appendChild(star);
+            }
+        }
+        createStars(60);
+
+        const img = document.getElementById('myImage');
+        const actionBtn = document.getElementById('actionBtn');
+        const pathSelect = document.getElementById('pathSelect');
+        const speedRange = document.getElementById('speedRange');
+        const statusDiv = document.getElementById('status');
+        let animating = false;
+
+        function updateStatus(text) {
+            statusDiv.textContent = text;
+        }
+
+        actionBtn.addEventListener('click', () => {
+            if (!animating) {
+                // set animation properties
+                const path = pathSelect.value;
+                img.style.animationName = path === 'zigzag' ? 'zigzag' : 'moveSpin';
+                img.style.animationDuration = (2 / parseFloat(speedRange.value)) + 's';
+                img.classList.add('animate');
+                actionBtn.textContent = 'Reset';
+                animating = true;
+                updateStatus('Animating along ' + path + ' path at ' + speedRange.value + 'x');
+            } else {
+                img.classList.remove('animate');
+                void img.offsetWidth; // reflow to restart animation
+                img.style.top = '0';
+                img.style.left = '0';
+                actionBtn.textContent = 'Animate';
+                animating = false;
+                updateStatus('Reset complete');
+            }
+        });
+
+        img.addEventListener('animationend', () => {
+            animating = true; // keep button state
+            updateStatus('Animation finished');
+        });
+    </script>
+</body>
+</html>
