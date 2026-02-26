@@ -30,5 +30,8 @@ git commands
 30.git branch <branchname> - it will create a new branchwith given branch name
 31.git branch -d branchname - it will delete the branch created
 32.git merge - it will merge the branch with the other master branch
-
+33.git log --pretty='format%c(auto)%h (%s,%ad)'
+34.git log --pretty=online
+35.git log --pretty=fuller
+36.git log --pretty=short
 we are in testing the git difference commands
