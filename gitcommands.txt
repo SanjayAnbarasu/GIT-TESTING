@@ -25,7 +25,10 @@ git commands
 25. git push origin master - it will push your source code the remote repository
 26. git pull origin master - it will download all the source files in the newly created project folder or existing folder
 27. git clone <git repository url> - It will download the source code repository without creating the link with local repository
-28.git branch branchname - here we can create a new branch 
-28.git checkout <b> branch name - it will change to the new branch 
+28.git branch - it will list out all the branches
+29.git checkout <b> branch name - it will checkout to a given branch name
+30.git branch <branchname> - it will create a new branchwith given branch name
+31.git branch -d branchname - it will delete the branch created
+32.git merge - it will merge the branch with the other master branch
 
 we are in testing the git difference commands
